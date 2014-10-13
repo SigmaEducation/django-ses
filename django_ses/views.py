@@ -1,4 +1,4 @@
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import copy
 import logging
 from datetime import datetime
@@ -192,7 +192,7 @@ def handle_bounce(request):
 
     try:
         notification = json.loads(raw_json)
-    except ValueError, e:
+    except ValueError as e:
         # TODO: What kind of response should be returned here?
         logger.warning('Recieved bounce with bad JSON: "%s"', e)
         return HttpResponseBadRequest()
@@ -224,8 +224,8 @@ def handle_bounce(request):
         # Get the subscribe url and hit the url to confirm the subscription.
         subscribe_url = notification.get('SubscribeURL')
         try:
-            urllib2.urlopen(subscribe_url).read()
-        except urllib2.URLError, e:
+            urllib.request.urlopen(subscribe_url).read()
+        except urllib.error.URLError as e:
             # Some kind of error occurred when confirming the request.
             logger.error('Could not confirm subscription: "%s"', e,
                 extra={
@@ -236,7 +236,7 @@ def handle_bounce(request):
     elif notification.get('Type') == 'Notification':
         try:
             message = json.loads(notification['Message'])
-        except ValueError, e:
+        except ValueError as e:
             # The message isn't JSON.
             # Just ignore the notification.
             logger.warning('Recieved bounce with bad JSON: "%s"', e, extra={

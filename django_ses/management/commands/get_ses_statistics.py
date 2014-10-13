@@ -48,7 +48,7 @@ class Command(BaseCommand):
             stats_dict[date]['complaints'] += complaints
             stats_dict[date]['rejects'] += rejects
 
-        for k, v in stats_dict.items():
+        for k, v in list(stats_dict.items()):
             stat, created = SESStat.objects.get_or_create(
                 date=k,
                 defaults={
